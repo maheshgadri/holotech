@@ -1,0 +1,146 @@
+<?php
+
+session_start();
+// define('DB_HOST','localhost'); // Host name
+// define('DB_USER','root'); // db user name
+// define('DB_PASS',''); // db user password name
+// define('DB_NAME','holo'); // db name
+try{
+
+    $con =new PDO("mysql:host=localhost;dbname=holo","root","");
+
+    if (isset($_POST['signup'])){
+
+      $username =$_POST['username'];
+      $password =$_POST['password'];
+
+      $insert = $con->prepare ("INSERT INTO users (username,password)  VALUES (:username, :password)");
+
+      $insert->bindParam(':username',$username,PDO::PARAM_STR);
+      $insert->bindParam(':password',$password,PDO::PARAM_STR);
+      $insert->execute();
+    }
+
+    elseif (isset($_POST['signin'])){
+
+      $username =$_POST['username'];
+      $password =$_POST['password'];
+
+      $select = $con->prepare("SELECT * FROM users WHERE username='$username' and password='$password'");
+     $select->setFetchMode(PDO::FETCH_ASSOC);
+     $select->execute();
+     $data=$select->fetch();
+     if($data['username']!=$username and $data['password']!=$password)
+     {
+      echo "invalid email or pass";
+     }
+     elseif($data['username']==$username and $data['password']==$password)
+     {
+
+        $_SESSION['username']=$data['username'];
+    header("location:welcome.php");
+     }
+     }
+    }
+    catch(PDOException $e)
+    {
+    echo "error".$e->getMessage();
+    }
+    ?>
+
+
+
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>PHP login system!</title>
+  </head>
+  <body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">Holotech </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+  <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="register.php">Register</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="login.php">Login</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="logout.php">Logout</a>
+      </li>
+
+
+
+    </ul>
+  </div>
+</nav>
+
+<div class="container mt-4">
+<div style="width:500px ; height:600px; float:left;">
+<div style="padding:85px;">
+<h3>Please Register Here:</h3>
+<hr>
+<form action="" method="post">
+  <div class="form-col">
+    <div class="form-group col-md-6">
+      <label for="inputEmail4">Username</label>
+      <input type="text" class="form-control" name="username" id="inputEmail4" placeholder="Email">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="inputPassword4">Password</label>
+      <input type="password" class="form-control" name ="password" id="inputPassword4" placeholder="Password">
+    </div>
+
+
+
+  <button type="submit" name="signup" class="btn btn-primary">Sign up</button>
+  <p>Already have an account? <a href="register.php">Login here</a>.</p>
+</form>
+</div>
+</div>
+
+</div>
+<div style="width:500px ; float:right; height:600px;">
+<div style="padding:85px;padding-right:200px;">
+<h3>Please Login Here:</h3>
+<hr>
+
+<form action="" method="post">
+  <div class="form-group">
+    <label for="exampleInputEmail1">Username</label>
+    <input type="text" name="username" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Username">
+  </div>
+  <div class="form-group">
+    <label for="exampleInputPassword1">Password</label>
+    <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Enter Password">
+  </div>
+
+  <button type="submit" name="signin" class="btn btn-primary">Signin</button>
+  <p>Don't have an account? <a href="register.php">Sign up now</a>.</p>
+</form></div>
+
+</div>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
