@@ -1,22 +1,21 @@
 <?php
 
 session_start();
-// define('DB_HOST','localhost'); // Host name
-// define('DB_USER','root'); // db user name
-// define('DB_PASS',''); // db user password name
-// define('DB_NAME','holo'); // db name
+
+
+
 try{
 
     $con =new PDO("mysql:host=localhost;dbname=holo","root","");
 
     if (isset($_POST['signup'])){
 
-      $username =$_POST['username'];
+      $user_id =$_POST['user_id'];
       $password =$_POST['password'];
 
-      $insert = $con->prepare ("INSERT INTO users (username,password)  VALUES (:username, :password)");
+      $insert = $con->prepare ("INSERT INTO users (user_id,password)  VALUES (:user_id, :password)");
 
-      $insert->bindParam(':username',$username,PDO::PARAM_STR);
+      $insert->bindParam(':user_id',$username,PDO::PARAM_STR);
       $insert->bindParam(':password',$password,PDO::PARAM_STR);
       $insert->execute();
     }
@@ -30,6 +29,8 @@ try{
      $select->setFetchMode(PDO::FETCH_ASSOC);
      $select->execute();
      $data=$select->fetch();
+    $id=$data["id"];
+
      if($data['username']!=$username and $data['password']!=$password)
      {
       echo "invalid email or pass";
@@ -38,8 +39,10 @@ try{
      {
 
         $_SESSION['username']=$data['username'];
-    header("location:welcome.php");
+        // $_SESSION['id']=$data['id'];
+    header("location:wc.php");
      }
+     
      }
     }
     catch(PDOException $e)
@@ -74,15 +77,15 @@ try{
       <li class="nav-item active">
         <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
       </li>
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <a class="nav-link" href="register.php">Register</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="login.php">Login</a>
-      </li>
-      <li class="nav-item">
+      </li> -->
+      <!-- <li class="nav-item">
         <a class="nav-link" href="logout.php">Logout</a>
-      </li>
+      </li> -->
 
 
 
